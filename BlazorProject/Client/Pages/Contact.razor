@@ -1,14 +1,11 @@
-﻿@page "/"
-@using BlazorProject.Shared
-@inject IJSRuntime JsRuntime
-@inject HttpClient Http
+﻿@page "/contact"
 @inject NavigationManager NavigationManager
 
 <PageTitle>Uranus</PageTitle>
+
 <head>
     <script src="https://kit.fontawesome.com/82de9758c4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <style>
         * {
             margin: 0;
@@ -20,7 +17,7 @@
 
         ul {
             margin-bottom: 0;
-            padding:0 !important;
+            padding:0;
         }
 
         a {
@@ -31,11 +28,6 @@
 
         header {
             background-color: #fff;
-        }
-
-        .container-s {
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .header__container {
@@ -60,21 +52,17 @@
             margin-left:auto;
         }
 
-        .header__auth a{
-            cursor:pointer;
-        }
-
-        .header__logo{
-            display:flex;
-            align-items:center;
+        .header__logo {
+            display: flex;
+            align-items: center;
             margin-right: auto;
-            cursor:pointer;
+            cursor: pointer;
         }
 
-        .header__logo img{
-            width:42px;
-            height:42px;
-        }
+            .header__logo img {
+                width: 42px;
+                height: 42px;
+            }
 
         .auth-registration {
             padding: 10px 34px;
@@ -83,91 +71,105 @@
             border-radius: 6px;
         }
 
-        .section__study {
-            background-image: url(https://t3.ftcdn.net/jpg/01/87/88/48/360_F_187884841_3CWTrFVgfxjLEeQYtYkLD8w1jRvM8zF1.webp);
-            background-size: cover;
-            background-repeat: no-repeat;
+        .active {
+            color: #113BA1;
         }
 
-        .study {
+        .contact__bg {
+            background-image: url("https://st2.depositphotos.com/2714617/8216/i/450/depositphotos_82164860-stock-photo-contact-global-concept-top-view.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+        }
+
+            .contact__bg h1 {
+                text-align: center;
+                font-size: 62px;
+                padding-top: 100px;
+            }
+
+        .container-s {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            gap: 60px;
+            justify-content: center;
+            margin-top: 100px;
+            gap: 81px;
         }
 
-        .section__study-title {
-            color: #fff;
-            font-size: 52px;
+        .contact__descr {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            gap: 50%;
+        }
+
+        .contact__info {
+            display: flex;
+            flex-direction: column;
+            gap: 41px;
+        }
+
+        .contact h1 {
+            font-size: 24px;
+            width: 612px;
             text-align: center;
-            padding-top: 140px;
         }
 
-        .section__study-descr {
-            color: #CBCBCB;
-            font-size: 22px;
-            text-align: center;
+        .contact__info p {
+            font-size: 24px;
         }
 
-        .section__study-btn {
-            padding: 22px 100px;
-            color: #fff;
-            background-color: #35A4D9;
-            border-radius: 10px;
-            margin-top: 60px;
-            margin-bottom: 180px;
-        }
-
-
-        /* ////////////////////////// */
-
-
-        .section__course {
-            margin-top: 108px;
-            margin-bottom: 150px;
-        }
-
-        .course__title {
-            color: #000;
-            font-size: 42px;
-            text-align: center;
-            margin-bottom: 72px;
-        }
-
-        .row {
+        .info {
             display: flex;
             gap: 30px;
-            justify-content: center;
+            align-items: center;
+            font-size: 24px;
         }
 
-        .col-4 {
-            width: 380px;
+        .social__icons {
+            font-size: 28px;
+            display: flex;
+            gap: 24px;
+        }
+
+        .inputs {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.10);
-            padding: 0;
-            cursor: pointer;
+            gap: 25px;
         }
 
-            .col-4 img {
-                width: 380px;
+            .inputs input {
+                width: 400px;
+                padding: 21px 30px;
+                border-radius: 10px;
+                border: 1px solid #000;
             }
 
-            .col-4 h6 {
-                color: #000;
-                font-size: 24px;
-                padding-left: 30px;
-                margin: 0;
-            }
+        input:focus {
+            outline: none;
+        }
 
-            .col-4 p {
-                padding-left: 30px;
-                color: #000;
-                font-size: 14px;
-                padding-bottom: 25px;
-            }
+        .inputs a {
+            width: 70%;
+            padding: 22px 26px;
+            border-radius: 10px;
+            background-color: #35A4D9;
+            color: white;
+            text-align: center;
+        }
+
+        .inputs p {
+            font-size: 14px;
+            line-height: 21px;
+            padding-bottom: 150px;
+        }
 
         .footer {
             background: #111;
@@ -231,68 +233,73 @@
 
         .footer__item a {
             cursor: pointer;
+            color: #949393;
         }
 
         .social__logo {
             cursor: pointer;
         }
-        
-        .header__a--active{
-            color: #113BA1;
-        }
     </style>
 </head>
+
 <header>
     <div class="container-s">
         <div class="header__container">
-            <div class="header__logo" @onclick="ReloadPage">
+            <div class="header__logo" @onclick="ToMain">
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
             <ul class="header__list">
                 <li>
-                    <a @onclick="ToAllCourses">Все курсы</a>
+                    <a @onclick="ToCourses">Все курсы</a>
                 </li>
                 <li>
                     <a @onclick="ToAbout">О нас</a>
                 </li>
                 <li>
-                    <a @onclick="ToContact">Контакты</a>
+                    <a href="/contact" class="active">Контакты</a>
                 </li>
             </ul>
             <div class="header__auth">
-                <a @onclick="Login">Войти</a>
-                <a @onclick="Registration" class="auth-registration">Регистрация</a>
+                <a @onclick="ToLogin">Войти</a>
+                <a @onclick="ToReg"class="auth-registration">Регистрация</a>
             </div>
         </div>
     </div>
 </header>
-<section class="section__study">
-    <div class="container study">
-        <h1 class="section__study-title">Хотите научиться профессионально инвестировать и всегда оставаться в плюсе?</h1>
-        <p class="section__study-descr">Грамотно разберем вашу финансовую ситуацию, разработаем стратегию и поможем эффективно инвестировать</p>
-        <a href="" class="section__study-btn">Записаться на курс</a>
-    </div>
+<section class="contact__bg">
+    <h1>Контактная информация</h1>
 </section>
-<section class="section__course">
-    <div class="container-s">
-        <h1 class="course__title">Все курсы</h1>
-        <div class="row">
-            @if (courses.Count <= 0)
-            {
-                <h1>No courses...</h1>
-            }
-            else
-            {
-                @foreach (var course in courses.Take(6))
-                {
-                    <div class="col-4">
-                        <img src="@course.ImageUrl" alt="@course.Title">
-                        <h6>@course.Title</h6>
-                        <p>@course.Description</p>
-                    </div>
-                }
-            }
+<section>
+    <div class="container-s contact">
+        <h1>Оставьте заявку, мы свяжемся и дадим подробное информацие о наших курсах</h1>
+        <div class="contact__descr">
+            <div class="contact__info">
+                <div class="info">
+                    <i class="fa-solid fa-phone"></i>
+                    <p>+998 98 369 90 69</p>
+                </div>
+                <div class="info">
+                    <i class="fa-solid fa-envelope"></i>
+                    <p>info@uranusinvest.com</p>
+                </div>
+                <div class="info">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>location</p>
+                </div>
+                <div class="social__icons">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-square-instagram"></i>
+                    <i class="fa-brands fa-telegram"></i>
+                </div>
+            </div>
+            <div class="inputs">
+                <input type="text" name="" id="" placeholder="Ваше имя">
+                <input type="text" name="" id="" placeholder="Ваш номер телефона">
+                <input type="text" name="" id="" placeholder="Когда вам позвонить">
+                <a href="">Заказать бесплатный звонок</a>
+                <p>Отправляя заявку, вы соглашаетесь на обработку ваших данных</p>
+            </div>
         </div>
     </div>
 </section>
@@ -300,7 +307,7 @@
     <div class="container-s">
         <div class="footer__container">
             <div class="footer__item">
-                <div class="footer__logo" @onclick="ReloadPage">
+                <div class="footer__logo" @onclick="ToMain">
                     <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                     <h1>URANUS</h1>
                 </div>
@@ -329,48 +336,31 @@
         </p>
     </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
-@code
-{
-    List<Course> courses = new List<Course>();
+@code {
 
-    protected override async Task OnInitializedAsync()
+    void ToMain()
     {
-        var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
-        if (result != null)
-        {
-            courses = result;
-        }
+        NavigationManager.NavigateTo("/");
     }
 
-    void Login()
+    void ToLogin()
     {
         NavigationManager.NavigateTo("/login");
     }
 
-    void Registration()
+    void ToReg()
     {
         NavigationManager.NavigateTo("/registration");
     }
 
-    void ToContact()
-    {
-        NavigationManager.NavigateTo("/contact");
-    }
-
-    void ToAllCourses()
+    void ToCourses()
     {
         NavigationManager.NavigateTo("/allcourses");
     }
 
-    private async Task ReloadPage()
-    {
-        await JsRuntime.InvokeVoidAsync("location.reload");
-    }
-
     void ToAbout()
     {
-       NavigationManager.NavigateTo("/aboutus");
+        NavigationManager.NavigateTo("/aboutus");
     }
 }

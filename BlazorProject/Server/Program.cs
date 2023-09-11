@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 
 var app = builder.Build();
 

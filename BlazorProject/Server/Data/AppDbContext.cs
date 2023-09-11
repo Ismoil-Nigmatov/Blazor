@@ -8,5 +8,6 @@ namespace BlazorProject.Server.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Course> Course { get; set; }
+        public DbSet<Teacher> Teacher { get; set; }
     }
 }
