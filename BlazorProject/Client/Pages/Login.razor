@@ -1,5 +1,10 @@
 ﻿@page "/login"
+@using BlazorProject.Server.Dto
+@using System.Net
+@using System.Text.Json
 @inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Login</PageTitle>
 
@@ -20,6 +25,7 @@
 
         a{
             text-decoration:none;
+            cursor:pointer;
         }
 
         p{
@@ -170,10 +176,10 @@
         </div>
         <div class="registration__fields">
             <h1>Войти в аккаунт</h1>
-            <input type="text" placeholder="Email">
-            <input type="password" placeholder="Пароль">
+            <input type="text" placeholder="Email" @bind="loginDto.Email">
+            <input type="password" placeholder="Пароль" @bind="loginDto.Password">
             <p>By clicking Sign In, you agree to our <a href="">Terms of Use</a> and our <a href="">Privacy Policy</a>.</p>
-            <a class="login" href="">Войти</a>
+            <a class="login" @onclick="OnValidSubmit">Войти</a>
             <a @onclick="ToPassword" class="forget__password">Забыли пароль?</a>
         </div>
         <div style="display: flex; justify-content: center; align-items: center; margin-top: 47px; margin-bottom: 43px; opacity: 0.44;">
@@ -230,5 +236,41 @@
     void ToPassword()
     {
         NavigationManager.NavigateTo("/password");
+    }
+
+    private LoginDTO loginDto = new LoginDTO();
+
+
+    async Task OnValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("/api/User/login", loginDto);
+
+        Console.WriteLine(response);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                JsonElement root = doc.RootElement;
+
+                if (root.TryGetProperty("email", out JsonElement emailElement))
+                {
+                    string email = emailElement.GetString()!;
+
+                    Console.WriteLine(email);
+
+                    await SaveToLocalStorage("email", email);
+                }
+            }
+
+            NavigationManager.NavigateTo("/user");
+        }
+    }
+
+    private async Task SaveToLocalStorage(string key, string value)
+    {
+        await JsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
     }
 }

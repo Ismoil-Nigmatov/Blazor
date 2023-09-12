@@ -1,5 +1,10 @@
 ﻿@page "/registration"
+@using BlazorProject.Server.Dto
+@using System.Text.Json
+@using BlazorProject.Shared
 @inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Registration</PageTitle>
 
@@ -26,6 +31,7 @@
 
         a{
             text-decoration:none;
+            cursor:pointer;
         }
 
         .container-s {
@@ -175,11 +181,11 @@
         </div>
         <div class="registration__fields">
             <h1>Создайте свой аккаунт</h1>
-            <input type="text" placeholder="Имя и Фамилия">
-            <input type="text" placeholder="Email">
-            <input type="password" placeholder="Пароль">
+            <input type="text" placeholder="Имя и Фамилия" @bind="userDto.FullName">
+            <input type="text" placeholder="Email" @bind="userDto.Email">
+            <input type="password" placeholder="Пароль" @bind="userDto.Password">
             <p>By clicking Sign In, you agree to our <a href="">Terms of Use</a> and our <a href="">Privacy Policy</a>.</p>
-            <a class="login" href="">Зарегистрироваться</a>
+            <a class="login" @onclick="OnValidSubmit">Зарегистрироваться</a>
         </div>
         <div style="display: flex; justify-content: center; align-items: center; margin-top: 47px; margin-bottom: 43px; opacity: 0.44;">
             <hr style="width: 50%; border: 1px solid black; margin-left: 80px; margin-right: 20px;">
@@ -199,8 +205,9 @@
         <p class="no_account">Есть аккаунт? <a @onclick="Login">Войти</a></p>
     </div>
 </section>
-
 @code {
+    private UserDTO userDto = new UserDTO();
+
     void Login()
     {
         NavigationManager.NavigateTo("/login");
@@ -210,4 +217,38 @@
     {
         NavigationManager.NavigateTo("/registration");
     }
+
+    async Task OnValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("/api/User", userDto);
+
+        Console.WriteLine(response);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                JsonElement root = doc.RootElement;
+
+                if (root.TryGetProperty("email", out JsonElement emailElement))
+                {
+                    string email = emailElement.GetString()!;
+
+                    Console.WriteLine(email);
+
+                    await SaveToLocalStorage("email", email);
+                }
+            }
+
+            NavigationManager.NavigateTo("/user");
+        }
+    }
+
+    private async Task SaveToLocalStorage(string key, string value)
+    {
+        await JsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
+    }
+
 }

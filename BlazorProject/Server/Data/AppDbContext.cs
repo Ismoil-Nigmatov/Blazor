@@ -9,5 +9,6 @@ namespace BlazorProject.Server.Data
 
         public DbSet<Course> Course { get; set; }
         public DbSet<Teacher> Teacher { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }
