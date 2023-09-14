@@ -1,5 +1,6 @@
 ﻿@page "/aboutus"
 @using BlazorProject.Shared
+@using Task = System.Threading.Tasks.Task
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
@@ -366,7 +367,7 @@
 @code {
     List<Teacher> teachers = new List<Teacher>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         var result = await Http.GetFromJsonAsync<List<Teacher>>("api/Teacher");
         if (result != null)

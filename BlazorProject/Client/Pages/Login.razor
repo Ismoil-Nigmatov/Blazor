@@ -1,6 +1,5 @@
 ﻿@page "/login"
 @using BlazorProject.Server.Dto
-@using System.Net
 @using System.Text.Json
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
@@ -241,7 +240,7 @@
     private LoginDTO loginDto = new LoginDTO();
 
 
-    async Task OnValidSubmit()
+    async System.Threading.Tasks.Task OnValidSubmit()
     {
         var response = await Http.PostAsJsonAsync("/api/User/login", loginDto);
 
@@ -269,7 +268,7 @@
         }
     }
 
-    private async Task SaveToLocalStorage(string key, string value)
+    private async System.Threading.Tasks.Task SaveToLocalStorage(string key, string value)
     {
         await JsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
     }

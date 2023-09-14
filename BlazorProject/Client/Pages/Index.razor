@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using BlazorProject.Shared
+@using Task = System.Threading.Tasks.Task
 @inject IJSRuntime JsRuntime
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
@@ -335,7 +336,7 @@
 {
     List<Course> courses = new List<Course>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
         if (result != null)
@@ -364,7 +365,7 @@
         NavigationManager.NavigateTo("/allcourses");
     }
 
-    private async Task ReloadPage()
+    private async System.Threading.Tasks.Task ReloadPage()
     {
         await JsRuntime.InvokeVoidAsync("location.reload");
     }

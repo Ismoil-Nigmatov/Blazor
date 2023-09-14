@@ -10,5 +10,14 @@ namespace BlazorProject.Server.Data
         public DbSet<Course> Course { get; set; }
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<Homework> Homework { get; set; }
+        public DbSet<Lesson> Lesson { get; set; }
+        public DbSet<BlazorProject.Shared.Task> Task { get; set; }
+        public DbSet<TaskAnswer> TaskAnswer { get; set; }
+        public DbSet<Contact> Contact { get; set; }
+        public DbSet<Education> Education { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
+        public DbSet<Result> Result { get; set; }
+        public DbSet<Test> Test { get; set; }
     }
 }

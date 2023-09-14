@@ -2,6 +2,7 @@
 @using BlazorProject.Server.Dto
 @using System.Text.Json
 @using BlazorProject.Shared
+@using Task = System.Threading.Tasks.Task
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
@@ -218,7 +219,7 @@
         NavigationManager.NavigateTo("/registration");
     }
 
-    async Task OnValidSubmit()
+    async System.Threading.Tasks.Task OnValidSubmit()
     {
         var response = await Http.PostAsJsonAsync("/api/User", userDto);
 
@@ -246,7 +247,7 @@
         }
     }
 
-    private async Task SaveToLocalStorage(string key, string value)
+    private async System.Threading.Tasks.Task SaveToLocalStorage(string key, string value)
     {
         await JsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
     }

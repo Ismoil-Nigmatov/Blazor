@@ -1,5 +1,6 @@
 ﻿@page "/allcourses"
 @using BlazorProject.Shared
+@using Task = System.Threading.Tasks.Task
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 
@@ -328,7 +329,7 @@
 
     List<Course> courses = new List<Course>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
         if (result != null)

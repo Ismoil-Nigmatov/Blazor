@@ -1,4 +1,5 @@
 ﻿using BlazorProject.Shared;
+using Task = System.Threading.Tasks.Task;
 
 namespace BlazorProject.Server.Repository
 {

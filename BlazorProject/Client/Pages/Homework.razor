@@ -1,9 +1,11 @@
-﻿@page "/user"
+﻿@page "/homework"
 @using BlazorProject.Shared
 @using Task = System.Threading.Tasks.Task
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+
+<PageTitle>Uranus</PageTitle>
 
 <head>
     <script src="https://kit.fontawesome.com/82de9758c4.js" crossorigin="anonymous"></script>
@@ -77,10 +79,10 @@
             }
 
         .contact__bg {
-            background-image: url(https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600);
+            background-image: url(https://thumbs.dreamstime.com/z/homework-word-writkboard-text-books-school-books-38372083.jpg?w=992);
             background-repeat: no-repeat;
             background-size: cover;
-            background-position: center;
+            background-position: top;
             /* filter: brightness(40%); */
             height: 300px;
         }
@@ -89,7 +91,7 @@
                 text-align: center;
                 font-size: 62px;
                 padding-top: 100px;
-                color: white;
+                color: black;
             }
 
         .footer {
@@ -191,12 +193,14 @@
 
             .col-4 img {
                 width: 380px;
+                height:250px;
             }
 
             .col-4 h6 {
                 color: #000;
                 font-size: 24px;
                 padding-left: 30px;
+                padding-bottom:25px;
                 margin: 0;
             }
 
@@ -217,16 +221,16 @@
 <header>
     <div class="container-s">
         <div class="header__container">
-            <div class="header__logo" >
+            <div class="header__logo">
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
             <ul class="header__list">
                 <li>
-                    <a class="active">Мои курсы</a>
+                    <a @onclick="ToUserPage">Мои курсы</a>
                 </li>
                 <li>
-                    <a @onclick="ToHomework">Домашние задания</a>
+                    <a class="active">Домашние задания</a>
                 </li>
             </ul>
             <div class="header__auth">
@@ -237,23 +241,22 @@
     </div>
 </header>
 <section class="contact__bg">
-    <h1>Мои курсы</h1>
+    <h1>Домашние задания</h1>
 </section>
 <section class="section__course">
     <div class="container">
         <div class="row">
-            @if (courses.Count <= 0)
+            @if (homeworks.Count <= 0)
             {
-                <h1>No courses...</h1>
+                <h1>No homeworks...</h1>
             }
             else
             {
-                @foreach (var course in courses)
+                @foreach (var homework in homeworks)
                 {
-                    <div class="col-4">
-                        <img src="@course.ImageUrl" alt="@course.Title">
-                        <h6>@course.Title</h6>
-                        <p>@course.Description</p>
+                    <div class="col-4" @onclick="() => ToTask(homework)">
+                        <img src="@homework.ImageUrl" alt="@homework.Description">
+                        <h6>@homework.Description</h6>
                     </div>
                 }
             }
@@ -299,9 +302,10 @@
         localStorage.clear();
     }
 </script>
+
 @code {
     private string UserEmail { get; set; } = string.Empty;
-    List<Course> courses = new List<Course>();
+    List<BlazorProject.Shared.Homework> homeworks = new List<BlazorProject.Shared.Homework>();
 
     private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
     {
@@ -313,6 +317,7 @@
         }
     }
 
+
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         await GetEmailFromLocalStorage();
@@ -320,14 +325,14 @@
         {
             NavigationManager.NavigateTo("/login");
         }
+
         else
         {
-            var result = await Http.GetFromJsonAsync<List<Course>>("/api/User/course?email=" + UserEmail);
-
+            var result = await Http.GetFromJsonAsync<List<BlazorProject.Shared.Homework>>("api/Homework");
             if (result != null)
             {
-                courses = result;
-            }
+                homeworks = result;
+            }   
         }
     }
 
@@ -338,12 +343,18 @@
 
     async void LogOut()
     {
-         await ClearLocalStorage();
+        await ClearLocalStorage();
         NavigationManager.NavigateTo("/");
     }
 
-    void ToHomework()
+    void ToUserPage()
     {
-        NavigationManager.NavigateTo("/homework");
+        NavigationManager.NavigateTo("/user");
+    }
+
+    async void ToTask(BlazorProject.Shared.Homework homework)
+    {
+        await JsRuntime.InvokeVoidAsync("localStorage.setItem", "taskId", homework.Task.Id);
+        NavigationManager.NavigateTo("/task");
     }
 }
