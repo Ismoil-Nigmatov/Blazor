@@ -241,6 +241,24 @@
         .social__logo {
             cursor: pointer;
         }
+
+        .active {
+            color: #113BA1;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .open {
+            display: flex;
+            align-items: center;
+            gap: 123.922px;
+        }
+
+        .open__gap{
+        gap:89.766px !important;
+        }
     </style>
 </head>
 
@@ -251,20 +269,53 @@
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
-            <ul class="header__list">
-                <li>
-                    <a @onclick="ToCourses">Все курсы</a>
-                </li>
-                <li>
-                    <a @onclick="ToAbout">О нас</a>
-                </li>
-                <li>
-                    <a href="/contact" class="active">Контакты</a>
-                </li>
-            </ul>
-            <div class="header__auth">
-                <a @onclick="ToLogin">Войти</a>
-                <a @onclick="ToReg"class="auth-registration">Регистрация</a>
+            <div>
+                <div id="div1" class="open">
+                    <ul class="header__list">
+                        <li>
+                            <a @onclick="ToCourses">Все курсы</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToLogin">Мои курсы</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToLogin">Домашние задания</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToAbout">О нас</a>
+                        </li>
+                        <li>
+                            <a class="active">Контакты</a>
+                        </li>
+                    </ul>
+                    <div class="header__auth">
+                        <a @onclick="ToLogin">Войти</a>
+                        <a @onclick="ToReg"class="auth-registration">Регистрация</a>
+                    </div>
+                </div>
+                <div id="div2" class="hide">
+                    <ul class="header__list">
+                        <li>
+                            <a @onclick="ToCourses">Все курсы</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToUser">Мои курсы</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToHomework">Домашние задания</a>
+                        </li>
+                        <li>
+                            <a @onclick="ToAbout">О нас</a>
+                        </li>
+                        <li>
+                            <a>Контакты</a>
+                        </li>
+                    </ul>
+                    <div class="header__auth">
+                        <a>@UserEmail</a>
+                        <a @onclick="LogOut">Log Out</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -338,13 +389,42 @@
         </p>
     </div>
 </footer>
+<script>
+    function hide() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
 
+        div1.classList.add("open");
+        div1.classList.remove("hide");
+        div2.classList.remove("open");
+        div2.classList.add("hide");
+    }
+
+    function open() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
+
+        div2.classList.remove("hide");
+        div2.classList.add("open");
+         div2.classList.add("open__gap");
+        div1.classList.remove("open");
+        div1.classList.add("hide");
+    }
+</script>
 @code {
+    private string UserEmail = String.Empty;
     private BlazorProject.Shared.Contact contact = new BlazorProject.Shared.Contact();
 
     void ToMain()
     {
-        NavigationManager.NavigateTo("/");
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/user");
+        }
     }
 
     void ToLogin()
@@ -373,5 +453,51 @@
         await JsRuntime.InvokeAsync<object>("alert", "Your request received and submitted to our staff");
         await JsRuntime.InvokeVoidAsync("location.reload");
     }
+
+    void ToUser()
+    {
+        NavigationManager.NavigateTo("/user/course");
+    }
+
+    void ToHomework()
+    {
+        NavigationManager.NavigateTo("/homework");
+    }
+
+    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
+    {
+        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            UserEmail = email;
+        }
+    }
+
+    private async System.Threading.Tasks.Task ClearLocalStorage()
+    {
+        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
+    }
+
+    async void LogOut()
+    {
+        await ClearLocalStorage();
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        await GetEmailFromLocalStorage();
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            await JsRuntime.InvokeVoidAsync("hide");
+
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("open");
+        }
+    }
+
 
 }

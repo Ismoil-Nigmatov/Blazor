@@ -1,9 +1,9 @@
-﻿@page "/"
+﻿@page "/user"
 @using BlazorProject.Shared
-@using Task = System.Threading.Tasks.Task
-@inject IJSRuntime JsRuntime
 @inject HttpClient Http
+@inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+
 
 <PageTitle>Uranus</PageTitle>
 <head>
@@ -21,13 +21,13 @@
 
         ul {
             margin-bottom: 0;
-            padding:0 !important;
+            padding: 0 !important;
         }
 
         a {
             color: #000;
             text-decoration: none;
-            cursor:pointer;
+            cursor: pointer;
         }
 
         header {
@@ -58,24 +58,24 @@
             display: flex;
             gap: 20px;
             align-items: center;
-            margin-left:auto;
+            margin-left: auto;
         }
 
-        .header__auth a{
-            cursor:pointer;
-        }
+            .header__auth a {
+                cursor: pointer;
+            }
 
-        .header__logo{
-            display:flex;
-            align-items:center;
+        .header__logo {
+            display: flex;
+            align-items: center;
             margin-right: auto;
-            cursor:pointer;
+            cursor: pointer;
         }
 
-        .header__logo img{
-            width:42px;
-            height:42px;
-        }
+            .header__logo img {
+                width: 42px;
+                height: 42px;
+            }
 
         .auth-registration {
             padding: 10px 34px;
@@ -192,7 +192,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor:pointer;
+            cursor: pointer;
         }
 
         .footer__item img {
@@ -237,28 +237,29 @@
         .social__logo {
             cursor: pointer;
         }
-        
-        .header__a--active{
+
+        .header__a--active {
             color: #113BA1;
         }
+
     </style>
 </head>
 <header>
     <div class="container-s">
         <div class="header__container">
-            <div class="header__logo" @onclick="ReloadPage">
+            <div class="header__logo" @onclick="ToMain">
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
             <ul class="header__list">
                 <li>
-                    <a @onclick="ToAllCourses">Все курсы</a>
+                    <a @onclick="ToAllCourse">Все курсы</a>
                 </li>
                 <li>
-                    <a @onclick="ToLogin">Мои курсы</a>
+                    <a @onclick="ToUserCourse">Мои курсы</a>
                 </li>
                 <li>
-                    <a @onclick="ToLogin">Домашние задания</a>
+                    <a @onclick="ToHomework">Домашние задания</a>
                 </li>
                 <li>
                     <a @onclick="ToAbout">О нас</a>
@@ -268,8 +269,8 @@
                 </li>
             </ul>
             <div class="header__auth">
-                <a @onclick="Login">Войти</a>
-                <a @onclick="Registration" class="auth-registration">Регистрация</a>
+                <a>@UserEmail</a>
+                <a @onclick="LogOut">Log Out</a>
             </div>
         </div>
     </div>
@@ -281,6 +282,30 @@
         <a href="" class="section__study-btn">Записаться на курс</a>
     </div>
 </section>
+
+<section class="section__course">
+    <div class="container-s">
+        <h1 class="course__title">Мои курсы</h1>
+        <div class="row">
+            @if (userCourses.Count <= 0)
+            {
+                <h1>No courses...</h1>
+            }
+            else
+            {
+                @foreach (var course in userCourses)
+                {
+                    <div class="col-4">
+                        <img src="@course.ImageUrl" alt="@course.Title">
+                        <h6>@course.Title</h6>
+                        <p>@course.Description</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
 <section class="section__course">
     <div class="container-s">
         <h1 class="course__title">Все курсы</h1>
@@ -307,7 +332,7 @@
     <div class="container-s">
         <div class="footer__container">
             <div class="footer__item">
-                <div class="footer__logo" @onclick="ReloadPage">
+                <div class="footer__logo" @onclick="ToMain">
                     <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                     <h1>URANUS</h1>
                 </div>
@@ -337,28 +362,73 @@
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-
-@code
-{
+<script>
+    function clearLocalStorage() {
+        localStorage.clear();
+    }
+</script>
+@code {
+    List<Course> userCourses = new List<Course>();
     List<Course> courses = new List<Course>();
+    private string UserEmail = String.Empty;
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
-        if (result != null)
+        await GetEmailFromLocalStorage();
+        if (string.IsNullOrEmpty(UserEmail))
         {
-            courses = result;
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            var userCourseResult = await Http.GetFromJsonAsync<List<Course>>("/api/User/course?email=" + UserEmail);
+
+            if (userCourseResult != null)
+            {
+                userCourses = userCourseResult;
+            }
+            var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
+            if (result != null)
+            {
+                courses = result;
+            }
         }
     }
 
-    void Login()
+    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
     {
-        NavigationManager.NavigateTo("/login");
+        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            UserEmail = email;
+        }
     }
 
-    void Registration()
+    private async System.Threading.Tasks.Task ClearLocalStorage()
     {
-        NavigationManager.NavigateTo("/registration");
+        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
+    }
+
+    async void LogOut()
+    {
+        await ClearLocalStorage();
+        NavigationManager.NavigateTo("/");
+    }
+
+    void ToUserCourse()
+    {
+        NavigationManager.NavigateTo("/user/course");
+    }
+
+    void ToHomework()
+    {
+        NavigationManager.NavigateTo("/homework");
+    }
+
+    void ToAbout()
+    {
+        NavigationManager.NavigateTo("/aboutus");
     }
 
     void ToContact()
@@ -366,23 +436,13 @@
         NavigationManager.NavigateTo("/contact");
     }
 
-    void ToAllCourses()
+    void ToMain()
+    {
+        NavigationManager.NavigateTo("/user");
+    }
+
+    void ToAllCourse()
     {
         NavigationManager.NavigateTo("/allcourses");
-    }
-
-    private async System.Threading.Tasks.Task ReloadPage()
-    {
-        await JsRuntime.InvokeVoidAsync("location.reload");
-    }
-
-    void ToAbout()
-    {
-       NavigationManager.NavigateTo("/aboutus");
-    }
-
-    void ToLogin()
-    {
-        NavigationManager.NavigateTo("/login");
     }
 }

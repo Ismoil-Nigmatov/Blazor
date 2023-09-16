@@ -3,6 +3,7 @@
 @using Task = System.Threading.Tasks.Task
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Uranus</PageTitle>
 
@@ -227,6 +228,24 @@
             text-align: center;
             cursor:pointer;
         }
+
+        .active {
+            color: #113BA1 !important;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .open {
+            display: flex;
+            align-items: center;
+            gap: 123.922px;
+        }
+
+        .open__gap{
+        gap:89.766px !important;
+        }
     </style>
 </head>
 
@@ -237,20 +256,51 @@
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
-            <ul class="header__list">
-                <li>
-                    <a href="/allcourses" class="active">Все курсы</a>
-                </li>
-                <li>
-                    <a @onclick="ToAbout" class="">О нас</a>
-                </li>
-                <li>
-                    <a @onclick="ToContact"class="">Контакты</a>
-                </li>
-            </ul>
-            <div class="header__auth">
-                <a @onclick="ToLogin">Войти</a>
-                <a @onclick="ToReg"class="auth-registration">Регистрация</a>
+            <div id="div1" class="open">
+                <ul class="header__list">
+                    <li>
+                        <a>Все курсы</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToLogin">Мои курсы</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToLogin">Домашние задания</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToAbout" class="active">О нас</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToContact">Контакты</a>
+                    </li>
+                </ul>
+                <div class="header__auth">
+                    <a @onclick="ToLogin">Войти</a>
+                    <a @onclick="ToReg"class="auth-registration">Регистрация</a>
+                </div>
+            </div>
+            <div id="div2" class="hide">
+                <ul class="header__list">
+                    <li>
+                        <a>Все курсы</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToUser">Мои курсы</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToHomework">Домашние задания</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToAbout">О нас</a>
+                    </li>
+                    <li>
+                        <a @onclick="ToContact">Контакты</a>
+                    </li>
+                </ul>
+                <div class="header__auth">
+                    <a>@UserEmail</a>
+                    <a @onclick="LogOut">Log Out</a>
+                </div>
             </div>
         </div>
     </div>
@@ -318,8 +368,30 @@
     </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+function hide() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
 
+        div1.classList.add("open");
+        div1.classList.remove("hide");
+        div2.classList.remove("open");
+        div2.classList.add("hide");
+    }
+
+    function open() {
+        const div1 = document.getElementById("div1");
+        const div2 = document.getElementById("div2");
+
+        div2.classList.remove("hide");
+        div2.classList.add("open");
+         div2.classList.add("open__gap");
+        div1.classList.remove("open");
+        div1.classList.add("hide");
+    }
+</script>
 @code {
+    private string UserEmail = String.Empty;
     private int displayCount = 15;
 
     private void LoadMore()
@@ -329,8 +401,39 @@
 
     List<Course> courses = new List<Course>();
 
+    private async System.Threading.Tasks.Task ClearLocalStorage()
+    {
+        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
+    }
+
+    async void LogOut()
+    {
+        await ClearLocalStorage();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
+    {
+        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
+
+        if (!string.IsNullOrEmpty(email))
+        {
+            UserEmail = email;
+        }
+    }
+
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
+        await GetEmailFromLocalStorage();
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            await JsRuntime.InvokeVoidAsync("hide");
+
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("open");
+        }
         var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
         if (result != null)
         {
@@ -350,7 +453,14 @@
 
     void ToMain()
     {
-        NavigationManager.NavigateTo("/");
+        if (string.IsNullOrEmpty(UserEmail))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/user");
+        }
     }
 
     void ToContact()
@@ -361,5 +471,15 @@
     void ToAbout()
     {
         NavigationManager.NavigateTo("/aboutus");
+    }
+
+    void ToUser()
+    {
+        NavigationManager.NavigateTo("/user/course");
+    }
+
+    void ToHomework()
+    {
+        NavigationManager.NavigateTo("/homework");
     }
 }
