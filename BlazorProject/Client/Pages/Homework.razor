@@ -1,9 +1,10 @@
 ﻿@page "/homework"
-@using BlazorProject.Shared
-@using Task = System.Threading.Tasks.Task
+@using BlazorProject.Client.Service
+@inject ApiServices ApiServices
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+@inject LocalStorageService LocalStorageService
 
 <PageTitle>Uranus</PageTitle>
 
@@ -316,20 +317,11 @@
     private string UserEmail { get; set; } = string.Empty;
     List<BlazorProject.Shared.Homework> homeworks = new List<BlazorProject.Shared.Homework>();
 
-    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
-    {
-        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
-
-        if (!string.IsNullOrEmpty(email))
-        {
-            UserEmail = email;
-        }
-    }
-
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        await GetEmailFromLocalStorage();
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
         if (string.IsNullOrEmpty(UserEmail))
         {
             NavigationManager.NavigateTo("/login");
@@ -337,7 +329,7 @@
 
         else
         {
-            var result = await Http.GetFromJsonAsync<List<BlazorProject.Shared.Homework>>("api/Homework");
+            var result = await ApiServices.GetHomeworkList();
             if (result != null)
             {
                 homeworks = result;
@@ -345,20 +337,18 @@
         }
     }
 
-    private async System.Threading.Tasks.Task ClearLocalStorage()
+    void LogOut()
     {
-        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
-    }
-
-    async void LogOut()
-    {
-        await ClearLocalStorage();
+        LocalStorageService.LogOut();
         NavigationManager.NavigateTo("/");
     }
 
     void ToUserPage()
     {
-        NavigationManager.NavigateTo("/user/course");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToUser", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     async void ToTask(BlazorProject.Shared.Homework homework)
@@ -369,21 +359,33 @@
 
     void ToMain()
     {
-        NavigationManager.NavigateTo("/user");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToUserIndex", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToAbout()
     {
-        NavigationManager.NavigateTo("/aboutus");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToAbout", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToContact()
     {
-        NavigationManager.NavigateTo("/contact");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToContact", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToAllCourse()
     {
-        NavigationManager.NavigateTo("/allcourses");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToCourses", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 }

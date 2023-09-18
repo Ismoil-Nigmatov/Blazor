@@ -1,8 +1,8 @@
 ﻿@page "/"
 @using BlazorProject.Shared
-@using Task = System.Threading.Tasks.Task
+@using BlazorProject.Client.Service
 @inject IJSRuntime JsRuntime
-@inject HttpClient Http
+@inject ApiServices ApiServices
 @inject NavigationManager NavigationManager
 
 <PageTitle>Uranus</PageTitle>
@@ -340,35 +340,15 @@
 
 @code
 {
-    List<Course> courses = new List<Course>();
+    public List<Course>? courses = new List<Course>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
-        if (result != null)
+        var result = ApiServices.GetCourseList();
+        if (result is not null)
         {
-            courses = result;
+            courses = await result;
         }
-    }
-
-    void Login()
-    {
-        NavigationManager.NavigateTo("/login");
-    }
-
-    void Registration()
-    {
-        NavigationManager.NavigateTo("/registration");
-    }
-
-    void ToContact()
-    {
-        NavigationManager.NavigateTo("/contact");
-    }
-
-    void ToAllCourses()
-    {
-        NavigationManager.NavigateTo("/allcourses");
     }
 
     private async System.Threading.Tasks.Task ReloadPage()
@@ -376,13 +356,51 @@
         await JsRuntime.InvokeVoidAsync("location.reload");
     }
 
+    void Login()
+    {
+        if (NavigationUrls.UrlMappings.TryGetValue("ToLogin", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
+    }
+
+    void Registration()
+    {
+        if (NavigationUrls.UrlMappings.TryGetValue("ToReg", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
+    }
+
+    void ToContact()
+    {
+        if (NavigationUrls.UrlMappings.TryGetValue("ToContact", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
+    }
+
+    void ToAllCourses()
+    {
+        if (NavigationUrls.UrlMappings.TryGetValue("ToCourses", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
+    }
+
     void ToAbout()
     {
-       NavigationManager.NavigateTo("/aboutus");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToAbout", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToLogin()
     {
-        NavigationManager.NavigateTo("/login");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToLogin", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 }

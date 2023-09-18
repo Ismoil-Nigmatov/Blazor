@@ -1,7 +1,9 @@
 ﻿@page "/contact"
+@using BlazorProject.Client.Service
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
+@inject LocalStorageService LocalStorageService
 
 <PageTitle>Uranus</PageTitle>
 
@@ -429,22 +431,34 @@
 
     void ToLogin()
     {
-        NavigationManager.NavigateTo("/login");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToLogin", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToReg()
     {
-        NavigationManager.NavigateTo("/registration");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToReg", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToCourses()
     {
-        NavigationManager.NavigateTo("/allcourses");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToCourses", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToAbout()
     {
-        NavigationManager.NavigateTo("/aboutus");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToAbout", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     async System.Threading.Tasks.Task AddContact()
@@ -456,38 +470,30 @@
 
     void ToUser()
     {
-        NavigationManager.NavigateTo("/user/course");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToUser", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToHomework()
     {
-        NavigationManager.NavigateTo("/homework");
-    }
-
-    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
-    {
-        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
-
-        if (!string.IsNullOrEmpty(email))
+        if (NavigationUrls.UrlMappings.TryGetValue("ToHomework", out string url))
         {
-            UserEmail = email;
+            NavigationManager.NavigateTo(url);
         }
     }
 
-    private async System.Threading.Tasks.Task ClearLocalStorage()
+    void LogOut()
     {
-        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
-    }
-
-    async void LogOut()
-    {
-        await ClearLocalStorage();
+        LocalStorageService.LogOut();
         NavigationManager.NavigateTo("/");
     }
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        await GetEmailFromLocalStorage();
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
         if (string.IsNullOrEmpty(UserEmail))
         {
             await JsRuntime.InvokeVoidAsync("hide");

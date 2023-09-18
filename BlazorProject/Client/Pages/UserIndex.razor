@@ -1,8 +1,11 @@
 ﻿@page "/user"
 @using BlazorProject.Shared
+@using BlazorProject.Client.Service
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
+@inject ApiServices ApiServices
+@inject LocalStorageService LocalStorageService
 
 
 <PageTitle>Uranus</PageTitle>
@@ -374,20 +377,21 @@
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        await GetEmailFromLocalStorage();
+        var email = await LocalStorageService.GetEmailFromLocalStorage();
+        UserEmail = email;
         if (string.IsNullOrEmpty(UserEmail))
         {
             NavigationManager.NavigateTo("/login");
         }
         else
         {
-            var userCourseResult = await Http.GetFromJsonAsync<List<Course>>("/api/User/course?email=" + UserEmail);
+            var userCourseResult = await ApiServices.GetUserCourses(UserEmail);
 
             if (userCourseResult != null)
             {
                 userCourses = userCourseResult;
             }
-            var result = await Http.GetFromJsonAsync<List<Course>>("api/Course");
+            var result = await ApiServices.GetCourseList();
             if (result != null)
             {
                 courses = result;
@@ -395,54 +399,59 @@
         }
     }
 
-    private async System.Threading.Tasks.Task GetEmailFromLocalStorage()
-    {
-        var email = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "email");
 
-        if (!string.IsNullOrEmpty(email))
-        {
-            UserEmail = email;
-        }
-    }
 
-    private async System.Threading.Tasks.Task ClearLocalStorage()
+    void LogOut()
     {
-        await JsRuntime.InvokeVoidAsync("clearLocalStorage");
-    }
-
-    async void LogOut()
-    {
-        await ClearLocalStorage();
+        LocalStorageService.LogOut();
         NavigationManager.NavigateTo("/");
     }
 
     void ToUserCourse()
     {
-        NavigationManager.NavigateTo("/user/course");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToUser", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToHomework()
     {
-        NavigationManager.NavigateTo("/homework");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToHomework", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToAbout()
     {
-        NavigationManager.NavigateTo("/aboutus");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToAbout", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToContact()
     {
-        NavigationManager.NavigateTo("/contact");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToContact", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToMain()
     {
-        NavigationManager.NavigateTo("/user");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToUserIndex", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 
     void ToAllCourse()
     {
-        NavigationManager.NavigateTo("/allcourses");
+        if (NavigationUrls.UrlMappings.TryGetValue("ToCourses", out string url))
+        {
+            NavigationManager.NavigateTo(url);
+        }
     }
 }
