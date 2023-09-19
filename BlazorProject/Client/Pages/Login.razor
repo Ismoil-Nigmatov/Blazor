@@ -1,9 +1,11 @@
 ﻿@page "/login"
 @using BlazorProject.Server.Dto
 @using System.Text.Json
+@using BlazorProject.Client.Service
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
+@inject ApiServices ApiServices
 
 <PageTitle>Login</PageTitle>
 
@@ -224,12 +226,12 @@
 @code {
     void SignIn()
     {
-        NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo(NavigationUrls.ToLogin);
     }
 
     void SignUp()
     {
-        NavigationManager.NavigateTo("/registration");
+        NavigationManager.NavigateTo(NavigationUrls.ToReg);
     }
 
     void ToPassword()
@@ -242,7 +244,7 @@
 
     async System.Threading.Tasks.Task OnValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("/api/User/login", loginDto);
+        var response = await ApiServices.Login(loginDto);
 
         Console.WriteLine(response);
 

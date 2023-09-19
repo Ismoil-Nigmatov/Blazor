@@ -1,8 +1,8 @@
 ﻿@page "/registration"
 @using BlazorProject.Server.Dto
 @using System.Text.Json
-@using BlazorProject.Shared
-@using Task = System.Threading.Tasks.Task
+@using BlazorProject.Client.Service
+@inject ApiServices ApiServices
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
@@ -211,17 +211,17 @@
 
     void Login()
     {
-        NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo(NavigationUrls.ToLogin);
     }
 
     void SignUp()
     {
-        NavigationManager.NavigateTo("/registration");
+        NavigationManager.NavigateTo(NavigationUrls.ToReg);
     }
 
     async System.Threading.Tasks.Task OnValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("/api/User", userDto);
+        var response = await ApiServices.Register(userDto);
 
         Console.WriteLine(response);
 

@@ -2,18 +2,15 @@
 {
     public class NavigationUrls
     {
-        public static Dictionary<string, string> UrlMappings = new Dictionary<string, string>
-        {
-            { "ToCourses", "/allcourses" },
-            { "ToContact", "/contact" },
-            { "ToLogin", "/login" },
-            { "ToReg", "/registration" },
-            { "ToMain", "/" },
-            { "ToUser", "/user/course" },
-            { "ToHomework", "/homework" },
-            {"ToAbout","/aboutus"},
-            {"ToUserIndex", "/user"},
-            {"ToAnswer","/answer"}
-        };
+        public const string ToCourse = "/allcourses";
+        public const string ToContact = "/contact";
+        public const string ToLogin = "/login";
+        public const string ToReg = "/registration";
+        public const string ToMain = "/";
+        public const string ToUser = "/user/course";
+        public const string ToHomework = "/homework";
+        public const string ToAbout = "/aboutus";
+        public const string ToUserIndex = "/user";
+        public const string ToAnswer = "/answer";
     }
 }

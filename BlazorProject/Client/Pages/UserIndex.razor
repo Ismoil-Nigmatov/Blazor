@@ -254,27 +254,7 @@
                 <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
                 <h1>URANUS</h1>
             </div>
-            <ul class="header__list">
-                <li>
-                    <a @onclick="ToAllCourse">Все курсы</a>
-                </li>
-                <li>
-                    <a @onclick="ToUserCourse">Мои курсы</a>
-                </li>
-                <li>
-                    <a @onclick="ToHomework">Домашние задания</a>
-                </li>
-                <li>
-                    <a @onclick="ToAbout">О нас</a>
-                </li>
-                <li>
-                    <a @onclick="ToContact">Контакты</a>
-                </li>
-            </ul>
-            <div class="header__auth">
-                <a>@UserEmail</a>
-                <a @onclick="LogOut">Log Out</a>
-            </div>
+            <UserHeader />
         </div>
     </div>
 </header>
@@ -331,39 +311,7 @@
         </div>
     </div>
 </section>
-<footer class="footer">
-    <div class="container-s">
-        <div class="footer__container">
-            <div class="footer__item">
-                <div class="footer__logo" @onclick="ToMain">
-                    <img src="https://devel.prom.uz/upload/organization_logos/ee/6e/ee6e2d1fa54c427cb384776ce3891061.png" alt="">
-                    <h1>URANUS</h1>
-                </div>
-                <div class="social__logo">
-                    <i class="fa-brands fa-facebook fa-2xl"></i>
-                    <i class="fa-brands fa-instagram fa-2xl"></i>
-                    <i class="fa-brands fa-telegram fa-2xl"></i>
-                </div>
-            </div>
-            <div class="footer__item">
-                <h6>ИНФОРМАЦИЯ</h6>
-                <a>Все курсы</a>
-                <a>Результаты учеников</a>
-                <a>О компании</a>
-            </div>
-            <div class="footer__item">
-                <h6>КОНТАКТЫ</h6>
-                <p>+998 98 369 90 69</p>
-                <p>info@uranusinvest.com</p>
-                <p>Location</p>
-            </div>
-        </div>
-        <p class="footer__p">
-            ©
-            2021 Uranus Invest
-        </p>
-    </div>
-</footer>
+<Footer />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script>
     function clearLocalStorage() {
@@ -399,59 +347,8 @@
         }
     }
 
-
-
-    void LogOut()
-    {
-        LocalStorageService.LogOut();
-        NavigationManager.NavigateTo("/");
-    }
-
-    void ToUserCourse()
-    {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToUser", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
-    }
-
-    void ToHomework()
-    {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToHomework", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
-    }
-
-    void ToAbout()
-    {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToAbout", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
-    }
-
-    void ToContact()
-    {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToContact", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
-    }
-
     void ToMain()
     {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToUserIndex", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
-    }
-
-    void ToAllCourse()
-    {
-        if (NavigationUrls.UrlMappings.TryGetValue("ToCourses", out string url))
-        {
-            NavigationManager.NavigateTo(url);
-        }
+        NavigationManager.NavigateTo(NavigationUrls.ToUserIndex);
     }
 }

@@ -1,5 +1,10 @@
 ﻿using System.Net.Http.Json;
+using BlazorProject.Client.Dto;
+using BlazorProject.Client.Pages;
+using BlazorProject.Server.Dto;
 using BlazorProject.Shared;
+using static System.Net.WebRequestMethods;
+using Contact = BlazorProject.Shared.Contact;
 
 namespace BlazorProject.Client.Service;
 
@@ -30,7 +35,7 @@ public class ApiServices
         return result;
     }
 
-    public async Task<List<Homework>> GetHomeworkList()
+    public async Task<List<BlazorProject.Shared.Homework>> GetHomeworkList()
     {
         var result = await _httpClient.GetFromJsonAsync<List<BlazorProject.Shared.Homework>>("api/Homework");
         return result;
@@ -40,5 +45,28 @@ public class ApiServices
     {
         var result = await _httpClient.GetFromJsonAsync<List<Teacher>>("api/Teacher");
         return result;
+    }
+
+
+    public async Task<HttpResponseMessage> Login(LoginDTO loginDto)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/User/login", loginDto);
+        return response;
+    }
+
+    public async Task<HttpResponseMessage> Register(UserDTO userDto)
+    {
+        var response = await _httpClient.PostAsJsonAsync("/api/User", userDto);
+        return response;
+    }
+
+    public async void AddContact(Contact contact)
+    {
+        await _httpClient.PostAsJsonAsync("api/Contact", contact);
+    }
+
+    public async void AddAnswer(TaskAnswerDTO taskAnswerDto)
+    {
+        await _httpClient.PostAsJsonAsync("/api/TaskAnswer", taskAnswerDto);
     }
 }
