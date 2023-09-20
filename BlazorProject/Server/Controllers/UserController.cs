@@ -82,5 +82,12 @@ namespace BlazorProject.Server.Controllers
 
             return Ok();
         }
+
+        [HttpPost("course")]
+        public async Task<IActionResult> AddCourse(UserCourseDTO userCourseDto)
+        {
+            await _userRepository.AddCourse(userCourseDto);
+            return Ok();
+        }
     }
 }

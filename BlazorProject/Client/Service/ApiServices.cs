@@ -5,6 +5,7 @@ using BlazorProject.Server.Dto;
 using BlazorProject.Shared;
 using static System.Net.WebRequestMethods;
 using Contact = BlazorProject.Shared.Contact;
+using Task = System.Threading.Tasks.Task;
 
 namespace BlazorProject.Client.Service;
 
@@ -68,5 +69,34 @@ public class ApiServices
     public async void AddAnswer(TaskAnswerDTO taskAnswerDto)
     {
         await _httpClient.PostAsJsonAsync("/api/TaskAnswer", taskAnswerDto);
+    }
+
+    public async Task<Education> GetEducation(string courseId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<Education>("/api/Education/one?id=" + courseId);
+        return result;
+    }
+
+    public async Task<Course> GetCourse(string courseId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<Course>("/api/Course/one?id=" + courseId);
+        return result;
+    }
+
+    public async Task<List<Feedback>> GetFeedback(string educationId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Feedback>>("/api/Feedback/one?id=" + educationId);
+        return result;
+    }
+
+    public async Task<List<Result>> GetResults(string educationId)
+    {
+        var result = await _httpClient.GetFromJsonAsync<List<Result>>("/api/Result/one?id=" + educationId);
+        return result;
+    }
+
+    public async Task AddCourse(UserCourseDTO userCourseDto)
+    {
+        await _httpClient.PostAsJsonAsync("/api/User/course", userCourseDto);
     }
 }

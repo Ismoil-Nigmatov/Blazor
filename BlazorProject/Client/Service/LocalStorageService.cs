@@ -30,5 +30,12 @@ namespace BlazorProject.Client.Service
 
             return email;
         }
+
+        public async Task<string> GetCourseId()
+        {
+            var courseId = await _jsruntime.InvokeAsync<string>("localStorage.getItem", "courseId");
+
+            return courseId;
+        }
     }
 }

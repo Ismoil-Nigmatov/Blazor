@@ -72,6 +72,17 @@ namespace BlazorProject.Server.Repository.Impl
             return user;
         }
 
+        public async Task AddCourse(UserCourseDTO userCourseDto)
+        {
+            var async = await _context.User.Include(e => e.Courses).FirstOrDefaultAsync(e => e.Email == userCourseDto.Email);
+            var courses = async.Courses;
+            var firstOrDefaultAsync = await _context.Course.FirstOrDefaultAsync(c => c.Id == userCourseDto.CourseId);
+            courses.Add(firstOrDefaultAsync);
+            async.Courses = courses;
+            _context.Entry(async).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<Course>> GetUserCourses(string email)
         {
             var user = await _context.User

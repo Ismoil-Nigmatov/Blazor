@@ -277,7 +277,7 @@
             {
                 @foreach (var course in courses.Take(displayCount))
                 {
-                    <div class="col-4">
+                    <div class="col-4" @onclick="() => ToAboutCourse(course)">
                         <img src="@course.ImageUrl" alt="@course.Title">
                         <h6>@course.Title</h6>
                         <p>@course.Description</p>
@@ -358,4 +358,9 @@ function hide() {
         }
     }
 
+     async void ToAboutCourse(Course course)
+    {
+        await JsRuntime.InvokeVoidAsync("localStorage.setItem", "courseId", course.Id);
+        NavigationManager.NavigateTo("/aboutcourse");
+    }
 }

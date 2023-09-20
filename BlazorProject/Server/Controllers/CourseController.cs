@@ -21,5 +21,12 @@ namespace BlazorProject.Server.Controllers
             var courses = await _courseRepository.GetAll();
             return Ok(courses);
         }
+
+        [HttpGet("one")]
+        public async Task<IActionResult> GetEducation(int id)
+        {
+            var course = await _courseRepository.Get(id);
+            return Ok(course);
+        }
     }
 }

@@ -13,4 +13,6 @@ public interface IUserRepository
     Task DeleteUserAsync(int id);
     Task<List<Course>> GetUserCourses(string email);
     Task<User> Login(LoginDTO loginDto);
+
+    Task AddCourse(UserCourseDTO userCourseDto);
 }
