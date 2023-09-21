@@ -6,6 +6,7 @@ using BlazorProject.Shared;
 using static System.Net.WebRequestMethods;
 using Contact = BlazorProject.Shared.Contact;
 using Task = System.Threading.Tasks.Task;
+using Test = BlazorProject.Shared.Test;
 
 namespace BlazorProject.Client.Service;
 
@@ -95,7 +96,13 @@ public class ApiServices
         return result;
     }
 
-    public async Task AddCourse(UserCourseDTO userCourseDto)
+    public async Task<List<Test>> GetTest(string lessonId)
+    {
+	    var result = await _httpClient.GetFromJsonAsync<List<Test>>("/api/Test/one?id=" + lessonId);
+	    return result;
+    }
+
+	public async Task AddCourse(UserCourseDTO userCourseDto)
     {
         await _httpClient.PostAsJsonAsync("/api/User/course", userCourseDto);
     }

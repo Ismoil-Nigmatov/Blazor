@@ -272,6 +272,6 @@
 
     private async System.Threading.Tasks.Task SaveToLocalStorage(string key, string value)
     {
-        await JsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", key, value);
     }
 }

@@ -26,7 +26,7 @@ namespace BlazorProject.Client.Service
 
         public async Task<string> GetEmailFromLocalStorage()
         {
-            var email = await _jsruntime.InvokeAsync<string>("localStorage.getItem", "email");
+            var email = await _jsruntime.InvokeAsync<string>("sessionStorage.getItem", "email");
 
             return email;
         }

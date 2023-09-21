@@ -462,13 +462,16 @@
             results = response;
         }
 
-        var userCoursesResult = await ApiServices.GetUserCourses(email);
-        userCourses = userCoursesResult;
-        var any = userCourses.Any(c => c.Id == Convert.ToInt32(courseId));
-        if (any)
+        if (!string.IsNullOrEmpty(UserEmail))
         {
-            IsConfirmed = false;
-            StateHasChanged();
+            var userCoursesResult = await ApiServices.GetUserCourses(email);
+            userCourses = userCoursesResult;
+            var any = userCourses.Any(c => c.Id == Convert.ToInt32(courseId));
+            if (any)
+            {
+                IsConfirmed = false;
+                StateHasChanged();
+            }
         }
     }
 
