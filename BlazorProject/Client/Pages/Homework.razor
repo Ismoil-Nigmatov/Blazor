@@ -288,7 +288,7 @@
 
     async void ToTask(BlazorProject.Shared.Homework homework)
     {
-        await JsRuntime.InvokeVoidAsync("localStorage.setItem", "taskId", homework.Task.Id);
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "taskId", homework.Task.Id);
         NavigationManager.NavigateTo("/task");
     }
 

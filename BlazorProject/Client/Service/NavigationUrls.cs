@@ -12,5 +12,7 @@
         public const string ToAbout = "/aboutus";
         public const string ToUserIndex = "/user";
         public const string ToAnswer = "/answer";
+        public const string ToLesson = "/lesson";
+        public const string ToTest = "/test";
     }
 }

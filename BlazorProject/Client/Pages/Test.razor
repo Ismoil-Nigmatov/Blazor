@@ -2,6 +2,7 @@
 @using BlazorProject.Client.Service
 @inject ApiServices ApiServices
 @inject IJSRuntime JSRuntime
+@inject LocalStorageService LocalStorageService
 
 
 <head>
@@ -116,20 +117,24 @@
     </div>
 
 <script>
+    let clickEnabled = true;
+
     setTimeout(function () {
         const containers = document.querySelectorAll('.question-container');
         containers.forEach(function (container) {
             const choices = container.querySelectorAll('.choice');
             choices.forEach(function (choice) {
                 choice.addEventListener('click', function (evt) {
-                    choices.forEach(function (c) {
-                        c.classList.remove('yellow');
-                    });
-                    evt.target.classList.add('yellow');
+                    if (clickEnabled) {
+                        choices.forEach(function (c) {
+                            c.classList.remove('yellow');
+                        });
+                        evt.target.classList.add('yellow');
+                    }
                 });
             });
         });
-    }, 3000);
+    }, 1000);
 
     const timerElement = document.getElementById('countdown');
     const initialTime = timerElement.textContent.split(':');
@@ -158,28 +163,49 @@
 
     const timerInterval = setInterval(updateCountdown, 1000);
 
-
     function check() {
+        clickEnabled = false;
         const questionContainers = document.querySelectorAll('.question-container');
+        let count = 0;
+        let not = 0;
         questionContainers.forEach(function (container) {
+            count++;
             const questionText = container.querySelector('h1').textContent;
             console.log(questionText);
             const p = container.querySelector(".yellow");
             console.log(p);
-            const li = p.nextElementSibling.textContent;
-            console.log(li);
-            const h6 = container.querySelector("h6").textContent;
-            if(questionText.startsWith("1")){
-                if (li === h6) {
-                    p.classList.remove('yellow');
-                    p.classList.add('green');
-                }
-                else {
-                    p.classList.remove('yellow');
-                    p.classList.add('red');
+            if (p !== null) {
+                const li = p.nextElementSibling.textContent;
+                console.log(li);
+                const h6 = container.querySelector("h6").textContent;
+                if (questionText.startsWith(count)) {
+                    if (li === h6) {
+                        p.classList.remove('yellow');
+                        p.classList.add('green');
+                    }
+                    else {
+                        p.classList.remove('yellow');
+                        p.classList.add('red');
+                    }
                 }
             }
+            else {
+                not++;
+            }
         });
+        const redChoices = document.querySelectorAll('.red');
+        const redLength = redChoices.length;
+        const result = (100 / count) * (count - (redLength + not));
+        if(result > 70){
+            timerElement.style.color = 'green';
+        }
+        if (result >= 50 && result <= 69) {
+            timerElement.style.color = 'yellow';
+        }
+        if (result < 50) {
+            timerElement.style.color = 'red';
+        }
+        timerElement.innerHTML = `Вы прошли тест на  ${result}%`
     }
 
 </script>
@@ -192,7 +218,8 @@
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        var test = await ApiServices.GetTest(1.ToString());
+        var lessonId = await LocalStorageService.GetLessonId();
+        var test = await ApiServices.GetTest(lessonId);
         if (test is not null)
         {
             tests = test;
