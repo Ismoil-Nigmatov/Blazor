@@ -1,6 +1,7 @@
 ﻿@using BlazorProject.Client.Service
 @inject NavigationManager NavigationManager
 @inject LocalStorageService LocalStorageService
+@inject IJSRuntime JsRuntime
 
 <div id="div1" class="open">
     <ul class="header__list">
@@ -48,7 +49,11 @@
         <a @onclick="LogOut">Log Out</a>
     </div>
 </div>
-
+<script>
+    function clearLocalStorage() {
+        sessionStorage.clear();
+    }
+</script>
 @code {
     private string UserEmail = String.Empty;
 
@@ -100,9 +105,9 @@
         NavigationManager.NavigateTo(NavigationUrls.ToHomework);
     }
 
-    void LogOut()
+    async void LogOut()
     {
-        LocalStorageService.LogOut();
+        await JsRuntime.InvokeVoidAsync("clearLocalStorage", "");
         NavigationManager.NavigateTo(NavigationUrls.ToMain);
     }
 

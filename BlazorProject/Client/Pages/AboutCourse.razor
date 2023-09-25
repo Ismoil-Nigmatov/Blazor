@@ -410,7 +410,12 @@
         div1.classList.remove("open");
         div1.classList.add("hide");
     }
+
+    function clearLocalStorage() {
+        sessionStorage.clear();
+    }
 </script>
+
 @code {
     private bool IsConfirmed = true;
     private string UserEmail = String.Empty;

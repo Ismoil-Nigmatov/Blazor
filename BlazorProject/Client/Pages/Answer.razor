@@ -297,7 +297,11 @@
 </section>
 <Footer />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-
+<script>
+    function clearLocalStorage() {
+        sessionStorage.clear();
+    }
+</script>
 @code {
 
     private TaskAnswerDTO taskAnswerDto = new TaskAnswerDTO();
@@ -310,7 +314,7 @@
 
     private async System.Threading.Tasks.Task GetTaskIdFromLocalStorage()
     {
-        var taskId = await JsRuntime.InvokeAsync<string>("localStorage.getItem", "taskId");
+        var taskId = await JsRuntime.InvokeAsync<string>("sessionStorage.getItem", "taskId");
 
         if (!string.IsNullOrEmpty(taskId))
         {

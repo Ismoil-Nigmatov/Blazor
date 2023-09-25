@@ -2,21 +2,7 @@
 @Body
 
 <script>
-    let isReloading = false;
-
-    window.addEventListener('beforeunload', function (e) {
-        if (!isReloading) {
-            localStorage.clear();
-        }
-    });
-
-    window.addEventListener('unload', function (e) {
-        if (!isReloading) {
-            localStorage.clear();
-        }
-    });
-
-    window.addEventListener('beforeunload', function (e) {
-        isReloading = true;
-    });
+    function clearLocalStorage() {
+        sessionStorage.clear();
+    }
 </script>

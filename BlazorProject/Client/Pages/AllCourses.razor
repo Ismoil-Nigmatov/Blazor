@@ -314,6 +314,10 @@ function hide() {
         div1.classList.remove("open");
         div1.classList.add("hide");
     }
+
+    function clearLocalStorage() {
+        sessionStorage.clear();
+    }
 </script>
 @code {
     private string UserEmail = String.Empty;
@@ -360,7 +364,7 @@ function hide() {
 
      async void ToAboutCourse(Course course)
     {
-        await JsRuntime.InvokeVoidAsync("localStorage.setItem", "courseId", course.Id);
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "courseId", course.Id);
         NavigationManager.NavigateTo("/aboutcourse");
     }
 }
