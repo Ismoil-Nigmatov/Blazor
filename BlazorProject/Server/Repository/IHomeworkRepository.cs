@@ -7,5 +7,6 @@ namespace BlazorProject.Server.Repository
     {
         Task<List<Homework>> GetAllHomeworkAsync();
         Task<Homework> GetHomeworkByIdAsync(int id);
+        Task<Homework> GetHomeworkByTaskId(int taskId);
     }
 }

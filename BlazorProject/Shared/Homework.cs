@@ -15,5 +15,6 @@ namespace BlazorProject.Shared
         public string Description { get; set; }
 
         public Task Task { get; set; }
+
     }
 }

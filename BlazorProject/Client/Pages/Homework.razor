@@ -1,5 +1,6 @@
 ﻿@page "/homework"
 @using BlazorProject.Client.Service
+@using BlazorProject.Shared
 @inject ApiServices ApiServices
 @inject HttpClient Http
 @inject IJSRuntime JsRuntime
@@ -201,11 +202,14 @@
                 color: #000;
                 font-size: 24px;
                 padding-left: 30px;
+                padding-right:30px;
                 padding-bottom:25px;
                 margin: 0;
+                overflow-wrap : anywhere;
             }
 
             .col-4 p {
+                padding-right:30px;
                 padding-left: 30px;
                 color: #000;
                 font-size: 14px;
@@ -236,17 +240,18 @@
 <section class="section__course">
     <div class="container">
         <div class="row">
-            @if (homeworks.Count <= 0)
+            @if (courses.Count <= 0)
             {
-                <h1>No homeworks...</h1>
+                <h1>No courses...</h1>
             }
             else
             {
-                @foreach (var homework in homeworks)
+                @foreach (var course in courses)
                 {
-                    <div class="col-4" @onclick="() => ToTask(homework)">
-                        <img src="@homework.ImageUrl" alt="@homework.Description">
-                        <h6>@homework.Description</h6>
+                    <div class="col-4" @onclick="() => ToTask(course)">
+                        <img src="@course.ImageUrl" alt="@course.Title">
+                        <h6>@course.Title</h6>
+                        <p>@course.Description</p>
                     </div>
                 }
             }
@@ -262,9 +267,9 @@
 </script>
 
 @code {
+    private int index = 0;
     private string UserEmail { get; set; } = string.Empty;
-    List<BlazorProject.Shared.Homework> homeworks = new List<BlazorProject.Shared.Homework>();
-
+    List<Course> courses = new List<Course>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
@@ -277,18 +282,20 @@
 
         else
         {
-            var result = await ApiServices.GetHomeworkList();
+            var result = await ApiServices.GetUserCourses(UserEmail);
+
             if (result != null)
             {
-                homeworks = result;
-            }   
+                courses = result;
+            }
+
         }
     }
 
 
-    async void ToTask(BlazorProject.Shared.Homework homework)
+    async void ToTask(BlazorProject.Shared.Course course)
     {
-        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "taskId", homework.Task.Id);
+        await JsRuntime.InvokeVoidAsync("sessionStorage.setItem", "courseId", course.Id);
         NavigationManager.NavigateTo("/task");
     }
 

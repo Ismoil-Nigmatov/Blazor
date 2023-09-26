@@ -405,6 +405,12 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+   window.onload = function (){
+       const btn = document.querySelector('.next');
+       if(btn){
+           btn.style.opacity = '0.5';
+       }
+   }
 </script>
 @code {
     private int index = 0;

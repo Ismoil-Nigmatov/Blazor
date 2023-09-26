@@ -28,5 +28,12 @@ namespace BlazorProject.Server.Controllers
             var homework = await _homeworkRepository.GetHomeworkByIdAsync(id);
             return Ok(homework);
         }
+
+        [HttpGet("task")]
+        public async Task<IActionResult> GetHomeworkByTask(int id)
+        {
+            var homework = await _homeworkRepository.GetHomeworkByTaskId(id);
+            return Ok(homework);
+        }
     }
 }

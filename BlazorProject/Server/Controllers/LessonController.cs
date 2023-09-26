@@ -20,5 +20,13 @@ namespace BlazorProject.Server.Controllers
             var lessons = await _lessonRepository.GetLessonsByCourseId(id);
             return Ok(lessons);
         }
+
+
+        [HttpGet("lesson")]
+        public async Task<IActionResult> GetOneLesson(int id)
+        {
+            var lesson = await _lessonRepository.GetLessonById(id);
+            return Ok(lesson);
+        }
     }
 }
