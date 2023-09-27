@@ -19,7 +19,5 @@ namespace BlazorProject.Shared
         public DateTime DateTime { get; set; }
 
         public EProcess Process { get; set; }
-
-        public Lesson Lesson { get; set; }
     }
 }

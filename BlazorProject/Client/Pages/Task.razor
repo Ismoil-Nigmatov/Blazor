@@ -212,7 +212,7 @@
     .date {
         margin-top: 95px;
         display: flex;
-        justify-content: space-between;
+        gap:50px;
     }
 
     .active {
@@ -247,18 +247,20 @@
             }
             </div>
         </div>
-        <div>
-            @foreach (var t in tasks)
-            {
-                <div class="values" @onclick="() => ToAnswer(t)">
-                    <h2>@t.Title</h2>
-                    <p>@t.Description</p>
-                    <div class="date">
-                        <p>Срок выполнения: @t.DateTime</p>
-                        <p>@t.Process</p>
-                    </div>
-                </div>
-            }
+        <div style="display:flex; flex-direction:column; gap:30px">
+               
+                @foreach (var t in tasks)
+                    {
+                        <div class="values" @onclick="() => ToAnswer(t)">
+                            <h2>@t.Title</h2>
+                            <p>@t.Description</p>
+                            <div class="date">
+                                <p>Срок выполнения: @t.DateTime</p>
+                                <p>@t.Process</p>
+                            </div>
+                        </div>
+                    }
+                
         </div>
     </div>
 </section>
@@ -273,10 +275,6 @@
 @code {
     private string UserEmail { get; set; } = string.Empty;
     private string CourseId = String.Empty;
-    private List<int> lessonIds = new List<int>();
-    private List<int> taskIds = new List<int>();
-    private List<BlazorProject.Shared.Homework> homeworks = new List<BlazorProject.Shared.Homework>();
-    private List<BlazorProject.Shared.Task> taksList = new List<BlazorProject.Shared.Task>();
     private int index = 0;
     private List<BlazorProject.Shared.Task> tasks = new List<BlazorProject.Shared.Task>();
     private List<BlazorProject.Shared.Lesson> lessons = new List<BlazorProject.Shared.Lesson>();
@@ -292,41 +290,9 @@
         }
         else
         {
-            var lessonsResult = await ApiServices.GetLessons(CourseId);
-            foreach (var id in lessonsResult)
-            {
-                lessonIds.Add(id.Id);
-            }
-
-            foreach (var id in lessonIds)
-            {
-               var taskList = await ApiServices.GetTaskByLessonId(id.ToString());
-                foreach (var task in taskList)
-                {
-                    taskIds.Add(task.Id);
-                }
-            }
-
-            foreach (var id in taskIds)
-            {
-               var task =  await ApiServices.GetTask(id.ToString());
-                taksList.Add(task);
-            }
-
-            index = taksList[0].Id;
-            foreach (var VARIABLE in taksList)
-            {
-                if (VARIABLE.Id == index)
-                {
-                    tasks.Add(VARIABLE);
-                }
-            }
-
-            foreach (var id in lessonIds)
-            {
-                var result = await ApiServices.GetOneLesson(id.ToString());
-                lessons.Add(result);
-            }
+            var result = await ApiServices.GetLessonAndTaskByCourseId(CourseId);
+            lessons = result;
+            tasks = lessons[0].Tasks;
         }
     }
 
@@ -347,9 +313,8 @@
         NavigationManager.NavigateTo(NavigationUrls.ToAnswer);
     }
 
-    async void ToAnotherTask(BlazorProject.Shared.Lesson lesson)
+    void ToAnotherTask(BlazorProject.Shared.Lesson lesson)
     {
-        var result = await ApiServices.GetTaskByLessonId(lesson.Id.ToString());
-        tasks = result;
+        tasks = lesson.Tasks;
     }
 }

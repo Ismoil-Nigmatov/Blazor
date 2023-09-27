@@ -15,11 +15,6 @@ namespace BlazorProject.Server.Repository.Impl
             return await _context.Task.ToListAsync();
         }
 
-        public async Task<List<Task>> GetTaskByLessonId(int id)
-        {
-            return await _context.Task.Include(t => t.Lesson).Where(t => t.Lesson.Id == id).ToListAsync();
-        }
-
         public async Task<Shared.Task> GetTaskByIdAsync(int id)
         {
             return await _context.Task.FirstOrDefaultAsync(t => t.Id == id);

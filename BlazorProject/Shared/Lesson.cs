@@ -16,5 +16,6 @@ namespace BlazorProject.Shared
 
         public string Information { get; set; }
         public Course Course { get; set; }
+        public List<Task> Tasks { get; set; }
     }
 }

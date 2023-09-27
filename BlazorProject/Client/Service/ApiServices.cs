@@ -133,4 +133,9 @@ public class ApiServices
         var result = await _httpClient.GetFromJsonAsync<List<BlazorProject.Shared.Task>>("/api/Task/lesson?id=" + lessonId);
         return result;
     }
+
+    public async Task<List<BlazorProject.Shared.Lesson>> GetLessonAndTaskByCourseId(string courseId)
+    {
+        return (await _httpClient.GetFromJsonAsync<List<BlazorProject.Shared.Lesson>>("/api/Lesson/task?id=" + courseId))!;
+    }
 }

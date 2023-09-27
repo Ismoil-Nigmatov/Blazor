@@ -1,4 +1,5 @@
 ﻿using BlazorProject.Shared;
+using Task = BlazorProject.Shared.Task;
 
 namespace BlazorProject.Server.Repository
 {
@@ -6,5 +7,6 @@ namespace BlazorProject.Server.Repository
     {
         Task<List<Lesson>> GetLessonsByCourseId(int courseId);
         Task<Lesson> GetLessonById(int id);
+        Task<List<Lesson>> GetLessonAndTaskByCourseId(int courseId);
     }
 }

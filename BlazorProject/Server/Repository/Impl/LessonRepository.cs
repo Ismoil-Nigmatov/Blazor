@@ -23,5 +23,10 @@ namespace BlazorProject.Server.Repository.Impl
         {
             return _context.Lesson.FirstOrDefault(l => l.Id == id);
         }
+
+        public async Task<List<Lesson>> GetLessonAndTaskByCourseId(int courseId)
+        {
+            return await _context.Lesson.Include(l => l.Tasks).Where(l => l.Course.Id == courseId).ToListAsync();
+        }
     }
 }

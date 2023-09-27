@@ -23,12 +23,5 @@ namespace BlazorProject.Server.Controllers
             return Ok(task);
         }
 
-
-        [HttpGet("lesson")]
-        public async Task<IActionResult> GetTaskByLessonId(int id)
-        {
-            var task = await _taskRepository.GetTaskByLessonId(id);
-            return Ok(task);
-        }
     }
 }
